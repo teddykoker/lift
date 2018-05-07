@@ -1,0 +1,8 @@
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/julienschmidt/httprouter"
+
+[[constraint]]
+  name = "github.com/mattn/go-sqlite3"
+  version = "1.6.0"
