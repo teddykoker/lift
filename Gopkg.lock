@@ -3,6 +3,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/jmoiron/sqlx"
+  packages = [
+    ".",
+    "reflectx"
+  ]
+  revision = "2aeb6a910c2b94f2d5eb53d9895d80e27264ec41"
+
+[[projects]]
+  branch = "master"
   name = "github.com/julienschmidt/httprouter"
   packages = ["."]
   revision = "adbc77eec0d91467376ca515bc3a14b8434d0f18"
@@ -16,6 +25,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b0fcaef4ee00ae94cb13d702b39d926b90aa71d594314b8f7372831d785d9c4b"
+  inputs-digest = "2c54c8be5614ffa358e9c5272c623eaf23918f95a7119970e08e5dec8519d579"
   solver-name = "gps-cdcl"
   solver-version = 1
