@@ -1,4 +1,4 @@
-package main
+package models
 
 import (
 	"database/sql"
@@ -9,16 +9,19 @@ type Exercise struct {
 	Name string
 }
 
+// An ExerciseStore is used for loading and saving Exercises to the database
 type ExerciseStore struct {
 	DB *sql.DB
 }
 
-func (store ExerciseStore) Get(int id) (Exercise, error) {
+// Get gets a single exercise with given id
+func (store ExerciseStore) Get(id int) (Exercise, error) {
 	var e Exercise
 	err := store.DB.QueryRow("SELECT name FROM exercises WHERE id=$1", id).Scan(&e.Name)
-	return (e, err)
+	return e, err
 }
 
+// List returns all exercises
 func (store ExerciseStore) List() ([]Exercise, error) {
 	rows, err := store.DB.Query("SELECT name FROM exercises")
 	if err != nil {
