@@ -1,10 +1,14 @@
 package models
 
-import "github.com/jmoiron/sqlx"
+import (
+	"fmt"
+
+	"github.com/jmoiron/sqlx"
+)
 
 // An Exercise represents a single exercise to be performed
 type Exercise struct {
-	id   int `db:"id"`
+	id   int `db:"exercise_id"`
 	Sets int `db:"sets"`
 	Reps int `db:"reps"`
 
@@ -14,7 +18,7 @@ type Exercise struct {
 
 var schema = `
 CREATE TABLE exercise (
-	int id,
+	int exercise_id,
 	int sets,
 	int reps,
 	int movement_id
@@ -28,12 +32,16 @@ type ExerciseStore struct {
 
 // Init initializes table schema
 func (store ExerciseStore) Init() {
-	store.DB.Exec(schema)
+	res, err := store.DB.Exec(schema)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(res)
 }
 
 // Get gets exercise with id
 func (store ExerciseStore) Get(id int) {
-	e := Exercise{}
+	// e := Exercise{}
 
 }
 

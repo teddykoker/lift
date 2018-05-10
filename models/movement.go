@@ -1,16 +1,18 @@
 package models
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/jmoiron/sqlx"
+)
 
 // An Movement represents a single Movement to be performed
 type Movement struct {
-	id   int    `db:"id"`
+	ID   int    `db:"movement_id"`
 	Name string `db:"name"`
 }
 
 var movementSchema = `
 CREATE TABLE movement (
-	int id,
+	movement_id integer primary key,
 	name text
 );
 `
@@ -28,13 +30,20 @@ func (store MovementStore) Init() {
 // GetByName gets a single Movement with given name
 func (store MovementStore) GetByName(name string) (Movement, error) {
 	e := Movement{}
-	err := store.DB.Get(&e, "SELECT * FROM Movement WHERE name=$1", name)
+	err := store.DB.Get(&e, "SELECT * FROM movement WHERE name=$1", name)
 	return e, err
 }
 
 // List returns all Movements
 func (store MovementStore) List() ([]Movement, error) {
 	es := []Movement{}
-	err := store.DB.Select(&es, "SELECT * FROM Movement")
+	err := store.DB.Select(&es, "SELECT * FROM movement")
 	return es, err
+}
+
+// Insert movement into Database
+func (store MovementStore) Insert(movement *Movement) error {
+	_, err := store.DB.NamedExec(`INSERT INTO movement (name) VALUES (:name)`, movement)
+	// TODO: set id of movement
+	return err
 }
