@@ -29,9 +29,9 @@ func (store MovementStore) Init() {
 
 // GetByName gets a single Movement with given name
 func (store MovementStore) GetByName(name string) (Movement, error) {
-	e := Movement{}
-	err := store.DB.Get(&e, "SELECT * FROM movement WHERE name=$1", name)
-	return e, err
+	m := Movement{}
+	err := store.DB.Get(&m, "SELECT * FROM movement WHERE name=$1", name)
+	return m, err
 }
 
 // List returns all Movements

@@ -40,4 +40,22 @@ func main() {
 		log.Fatalln(err)
 	}
 	fmt.Println(movements)
+
+	store.Exercises.Init()
+
+	err = store.Exercises.Insert(&models.Exercise{
+		Reps:       5,
+		Sets:       5,
+		MovementID: movements[0].ID,
+	})
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	exercises, err := store.Exercises.List()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println(exercises)
 }
