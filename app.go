@@ -1,27 +1,28 @@
 package main
 
 import (
-	"database/sql"
+	"lift/models"
 	"log"
 	"net/http"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 // App struct where all variables will be defined
 type App struct {
 	Router *httprouter.Router
-	DB     *sql.DB
+	Store  *models.Datastore
 }
 
 // Entry is the path of the production client to host
 const Entry string = "client/build"
 
 // NewApp returns initialized struct
-func NewApp(dbPath string) *App {
+func NewApp(dbURL string) *App {
 
-	db, err := sql.Open("sqlite3", dbPath)
+	db, err := sqlx.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 	}
@@ -32,7 +33,7 @@ func NewApp(dbPath string) *App {
 	router.NotFound = http.FileServer(http.Dir("client/build"))
 
 	app := &App{
-		DB:     db,
+		Store:  models.NewDatastore(db),
 		Router: router,
 	}
 

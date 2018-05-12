@@ -1,1 +1,1 @@
-web: go-react -port=$PORT
+web: lift -port=$PORT

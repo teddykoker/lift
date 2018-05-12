@@ -18,14 +18,14 @@ type Exercise struct {
 }
 
 var exerciseSchema = `
-CREATE TABLE exercise (
-	exercise_id integer primary key,
-	sets        integer,
-	reps        integer,
-	weight      real,
-	movement    text,
-	sequence    integer,
-	program_id  integer
+CREATE TABLE IF NOT EXISTS exercise (
+	exercise_id SERIAL primary key,
+	sets        INT,
+	reps        INT,
+	weight      REAL,
+	movement    VARCHAR,
+	sequence    INT,
+	program_id  INT
 );
 `
 
@@ -42,15 +42,15 @@ func (store ExerciseStore) Init() {
 
 // Insert exercise into database
 func (store ExerciseStore) Insert(exercise *Exercise) error {
-	_, err := store.DB.NamedExec(
-		`INSERT INTO exercise (sets, reps, weight, movement, sequence, program_id) VALUES (
-			:sets,
-			:reps,
-			:weight,
-			:movement,
-			:sequence,
-			:program_id)`, exercise)
-	return err
+	return store.DB.QueryRow(`INSERT INTO exercise (sets, reps, weight, movement, sequence, program_id) VALUES
+		($1, $2, $3, $4, $5, $6) RETURNING exercise_id`,
+		&exercise.Sets,
+		&exercise.Reps,
+		&exercise.Weight,
+		&exercise.Movement,
+		&exercise.Sequence,
+		&exercise.ProgramID,
+	).Scan(&exercise.ID)
 }
 
 // Get gets exercise with id

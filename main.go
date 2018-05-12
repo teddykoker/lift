@@ -1,35 +1,32 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"lift/models"
 	"log"
+	"os"
 
-	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 func main() {
 
-	// portPtr := flag.Int("port", 3001, "Port to run application on")
-	// flag.Parse()
+	portPtr := flag.Int("port", 3001, "Port to run application on")
+	flag.Parse()
 
-	// addr := fmt.Sprintf(":%d", *portPtr)
+	addr := fmt.Sprintf(":%d", *portPtr)
 
-	// log.Printf("Listening on %s", addr)
+	log.Printf("Listening on %s", addr)
 
-	// app := NewApp("./app.db")
-	// app.Run(addr)
+	app := NewApp(os.Getenv("DATABASE_URL"))
+	//app.Run(addr)
 
-	db, err := sqlx.Open("sqlite3", ":memory:")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	store := models.NewDatastore(db)
+	store := app.Store
 
 	store.Exercises.Init()
 
-	err = store.Exercises.Insert(&models.Exercise{
+	err := store.Exercises.Insert(&models.Exercise{
 		Reps:      5,
 		Sets:      5,
 		Weight:    315.0,

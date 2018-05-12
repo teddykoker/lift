@@ -16,10 +16,10 @@ type User struct {
 }
 
 var userSchema = `
-CREATE TABLE user (
-	user_id integer primary key,
-	username text,
-	password text
+CREATE TABLE IF NOT EXISTS users (
+	user_id  SERIAL PRIMARY KEY,
+	username VARCHAR,
+	password VARCHAR
 );
 `
 
@@ -36,7 +36,7 @@ func (store UserStore) Init() {
 // Insert user into database
 func (store UserStore) Insert(user *User) error {
 	var exists bool
-	if err := store.DB.QueryRow("SELECT EXISTS (SELECT user_id FROM user WHERE username=$1)", user.Username).Scan(&exists); err != nil {
+	if err := store.DB.QueryRow("SELECT EXISTS (SELECT user_id FROM users WHERE username=$1)", user.Username).Scan(&exists); err != nil {
 		return err
 	}
 	if exists {
@@ -47,16 +47,13 @@ func (store UserStore) Insert(user *User) error {
 		return err
 	}
 	user.Password = string(pass)
-	_, err = store.DB.Exec("INSERT INTO user (username, password) VALUES ($1, $2)", user.Username, user.Password)
-
-	// TODO write id
-	return err
+	return store.DB.QueryRow("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING user_id", user.Username, user.Password).Scan(&user.ID)
 }
 
 // Authenticate returns an error unless the username and password match those in the database
 func (store UserStore) Authenticate(user *User) error {
 	var hash string
-	if err := store.DB.QueryRow("SELECT user_id, password FROM user WHERE username=$1", user.Username).Scan(&user.ID, &hash); err != nil {
+	if err := store.DB.QueryRow("SELECT user_id, password FROM users WHERE username=$1", user.Username).Scan(&user.ID, &hash); err != nil {
 		return err
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(user.Password)); err != nil {
