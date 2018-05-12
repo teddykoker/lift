@@ -6,13 +6,13 @@ import "github.com/jmoiron/sqlx"
 type Datastore struct {
 	DB        *sqlx.DB
 	Exercises *ExerciseStore
-	Movements *MovementStore
+	Users     *UserStore
 }
 
 // NewDatastore creates a new datastore
 func NewDatastore(db *sqlx.DB) *Datastore {
 	d := &Datastore{DB: db}
 	d.Exercises = &ExerciseStore{DB: db}
-	d.Movements = &MovementStore{DB: db}
+	d.Users = &UserStore{DB: db}
 	return d
 }

@@ -26,36 +26,45 @@ func main() {
 		log.Fatalln(err)
 	}
 	store := models.NewDatastore(db)
-	store.Movements.Init()
-
-	err = store.Movements.Insert(&models.Movement{Name: "Bench"})
-	if err != nil {
-		log.Fatalln(err)
-	}
-	store.Movements.Insert(&models.Movement{Name: "Squat"})
-	store.Movements.Insert(&models.Movement{Name: "Deadlift"})
-
-	movements, err := store.Movements.List()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	fmt.Println(movements)
 
 	store.Exercises.Init()
 
 	err = store.Exercises.Insert(&models.Exercise{
-		Reps:       5,
-		Sets:       5,
-		MovementID: movements[0].ID,
+		Reps:      5,
+		Sets:      5,
+		Weight:    315.0,
+		Movement:  "Squat",
+		Sequence:  0,
+		ProgramID: 1,
 	})
-
 	if err != nil {
 		log.Fatalln(err)
 	}
+
 	exercises, err := store.Exercises.List()
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	fmt.Println(exercises)
+
+	dude := &models.User{
+		Username: "dude",
+		Password: "password",
+	}
+	store.Users.Init()
+	err = store.Users.Insert(dude)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Print(*dude)
+	}
+
+	dude.Password = "password"
+	err = store.Users.Authenticate(dude)
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("User Authenticated")
+	}
+
 }
