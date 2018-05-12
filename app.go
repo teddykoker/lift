@@ -36,6 +36,7 @@ func NewApp(dbURL string) *App {
 		Store:  models.NewDatastore(db),
 		Router: router,
 	}
+	app.Bind()
 
 	return app
 }
