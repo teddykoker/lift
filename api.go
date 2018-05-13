@@ -30,14 +30,17 @@ func (app *App) login(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	defer r.Body.Close()
 	if err := app.Store.Users.Authenticate(&user); err != nil {
 		log.Println("invalid credential")
+		return
 	}
 	token, err := user.Token()
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	resp, err := json.Marshal(map[string]string{"token": token})
 	if err != nil {
 		log.Println(err)
+		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

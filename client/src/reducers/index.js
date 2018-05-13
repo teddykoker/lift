@@ -1,4 +1,4 @@
-import { APP_LOAD } from "../constants/actionTypes";
+import { APP_LOAD, LOGIN } from "../constants/actionTypes";
 
 const defaultState = {
   token: null,
@@ -12,6 +12,11 @@ export default (state = defaultState, action) => {
         ...state,
         token: action.token || null,
         loaded: true
+      };
+    case LOGIN:
+      return {
+        ...state,
+        token: action.payload.token
       };
     default:
       return state;

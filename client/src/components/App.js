@@ -4,24 +4,24 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import api from "../api";
 import { onLoad } from "../actions";
 
+import Login from "./Login";
 import Header from "./Header";
 
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
-  onLoad: token => dispatch(onLoad(token))
+  onLoad: (token, user) => dispatch(onLoad(token, user))
 });
 
-const Home = (props) => <div>Home</div>;
-const Login = (props) => <div>Login</div>;
+const Home = props => <div>Home</div>;
 
 class App extends React.Component {
-  componentWillMount() {
+  async componentWillMount() {
     const token = window.localStorage.getItem("jwt");
     if (token) {
       api.setToken(token);
     }
-    this.props.onLoad(token);
+    this.props.onLoad(token, token ? api.currentUser() : null);
   }
 
   render() {

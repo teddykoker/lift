@@ -1,6 +1,12 @@
-import { APP_LOAD } from "../constants/actionTypes";
+import { APP_LOAD, LOGIN } from "../constants/actionTypes";
 
-export const onLoad = token => ({
+export const onLoad = (token, user) => ({
   type: APP_LOAD,
-  token
+  token,
+  user
+});
+
+export const login = payload => ({
+  type: LOGIN,
+  payload
 });
