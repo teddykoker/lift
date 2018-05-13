@@ -1,13 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
-import api, { setToken } from "../api";
+import { Route, Switch, withRouter } from "react-router-dom";
+import api from "../api";
 import { onLoad } from "../actions";
+
+import Header from "./Header";
 
 const mapStateToProps = state => ({});
 
 const mapDispatchToProps = dispatch => ({
   onLoad: token => dispatch(onLoad(token))
 });
+
+const Home = (props) => <div>Home</div>;
+const Login = (props) => <div>Login</div>;
 
 class App extends React.Component {
   componentWillMount() {
@@ -20,31 +26,15 @@ class App extends React.Component {
 
   render() {
     return (
-      <nav className="pa3 pa4-ns">
-        <a
-          className="link dim black b f1 f-headline-ns tc db mb3 mb4-ns"
-          href="#"
-          title="Home"
-        >
-          Lift
-        </a>
-        <div className="tc pb3">
-          <a className="link dim gray f6 f5-ns dib mr3" href="#">
-            Programs
-          </a>
-          <a className="link dim gray f6 f5-ns dib mr3" href="#" title="About">
-            About
-          </a>
-          <a className="link dim gray f6 f5-ns dib mr3" href="#" title="Store">
-            Sign Up
-          </a>
-          <a className="link dim gray f6 f5-ns dib" href="#" title="Contact">
-            Log In
-          </a>
-        </div>
-      </nav>
+      <div>
+        <Header />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/login" component={Login} />
+        </Switch>
+      </div>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
