@@ -4,6 +4,7 @@ import (
 	"lift/models"
 	"log"
 	"net/http"
+	"path"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/julienschmidt/httprouter"
@@ -16,8 +17,9 @@ type App struct {
 	Store  *models.Datastore
 }
 
-// Entry is the path of the production client to host
-const Entry string = "client/build"
+const entry = "client/build"
+
+var static = path.Join(entry, "static")
 
 // NewApp returns initialized struct
 func NewApp(dbURL string) *App {
@@ -29,8 +31,12 @@ func NewApp(dbURL string) *App {
 
 	router := httprouter.New()
 
-	// Catch all to serve static files
-	router.NotFound = http.FileServer(http.Dir("client/build"))
+	router.ServeFiles("/static/*filepath", http.Dir(static))
+
+	// Catch all to serve index.html
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, entry)
+	})
 
 	app := &App{
 		Store:  models.NewDatastore(db),

@@ -10,9 +10,9 @@ import (
 
 // A User represents a single user of the site
 type User struct {
-	ID       int    `db:"user_id"`
-	Username string `db:"username"`
-	Password string `db:"password"`
+	ID       int    `db:"user_id" json:"id"`
+	Username string `db:"username" json:"username"`
+	Password string `db:"password" json:"password"`
 }
 
 var userSchema = `
