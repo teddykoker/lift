@@ -27,6 +27,7 @@ class Login extends Component {
     this.props.login(payload);
     if (payload.token) {
       window.localStorage.setItem("jwt", payload.token);
+      api.setToken(payload.token)
       this.props.history.push("/");
     }
   };
