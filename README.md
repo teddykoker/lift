@@ -10,6 +10,7 @@ heroku buildpacks:set heroku/go
 heroku buildpacks:add --index 2 heroku/nodejs
 heroku addons:create heroku-postgresql:hobby-dev
 git push heroku master
+heroku open
 ```
 
 ## Local Installation
