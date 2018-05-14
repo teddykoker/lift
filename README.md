@@ -3,6 +3,7 @@
 ## Deploy to Heroku
 Download and install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli#download-and-install)
 ```shell
+git clone https://github.com/teddykoker/lift.git && cd lift
 heroku login
 heroku create
 heroku buildpacks:set heroku/go
