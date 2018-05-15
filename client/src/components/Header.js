@@ -18,7 +18,7 @@ class Header extends Component {
           <Link className="link dim gray f6 f5-ns dib mr3" to="/">
             About
           </Link>
-          <Link className="link dim gray f6 f5-ns dib mr3" to="/">
+          <Link className="link dim gray f6 f5-ns dib mr3" to="/signup">
             Sign Up
           </Link>
           <Link className="link dim gray f6 f5-ns dib" to="/login">

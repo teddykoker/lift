@@ -1,8 +1,6 @@
 package models
 
 import (
-	"fmt"
-
 	"github.com/jmoiron/sqlx"
 )
 
@@ -36,8 +34,7 @@ type ExerciseStore struct {
 
 // Init initializes table schema
 func (store ExerciseStore) Init() {
-	res, err := store.DB.Exec(exerciseSchema)
-	fmt.Println(res, err)
+	store.DB.Exec(exerciseSchema)
 }
 
 // Insert exercise into database
