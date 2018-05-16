@@ -18,7 +18,7 @@ export default (state = defaultState, action) => {
     case LOGIN:
       return {
         ...state,
-        user: action.payload || null,
+        user: action.payload.error ? null : action.payload,
         error: action.payload.error || null
       };
     case LOGOUT:
