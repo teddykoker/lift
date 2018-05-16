@@ -1,4 +1,4 @@
-import { APP_LOAD, LOGIN, SIGNUP } from "../constants/actionTypes";
+import { APP_LOAD, LOGIN, SIGNUP, LOGOUT } from "../constants/actionTypes";
 
 const defaultState = {
   user: null,
@@ -20,6 +20,11 @@ export default (state = defaultState, action) => {
         ...state,
         user: action.payload || null,
         error: action.payload.error || null
+      };
+    case LOGOUT:
+      return {
+        ...state,
+        user: null
       };
     default:
       return state;
