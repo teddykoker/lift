@@ -1,7 +1,7 @@
 import { APP_LOAD, LOGIN, SIGNUP } from "../constants/actionTypes";
 
 const defaultState = {
-  token: null,
+  user: null,
   error: null,
   loaded: false
 };
@@ -11,14 +11,14 @@ export default (state = defaultState, action) => {
     case APP_LOAD:
       return {
         ...state,
-        token: action.token || null,
+        user: action.user || null,
         loaded: true
       };
     case SIGNUP:
     case LOGIN:
       return {
         ...state,
-        token: action.payload.token,
+        user: action.payload || null,
         error: action.payload.error || null
       };
     default:

@@ -5,6 +5,7 @@ import (
 	"lift/models"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -14,6 +15,7 @@ func (app *App) Bind() {
 	app.Router.GET("/api/", app.home)
 	app.Router.POST("/api/login", app.login)
 	app.Router.POST("/api/signup", app.signup)
+	app.Router.GET("/api/user", app.user)
 }
 
 // respondWithError is a helper to respond with error messages in JSON
@@ -40,12 +42,14 @@ func (app *App) login(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 		respondWithError(w, http.StatusUnauthorized, "Incorrect username or password")
 		return
 	}
-	token, err := user.Token()
+	token, err := user.GenerateToken()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not generate token")
 		return
 	}
-	resp, err := json.Marshal(map[string]string{"token": token})
+	user.Token = token
+	user.Password = ""
+	resp, err := json.Marshal(user)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error marshalling json")
 		return
@@ -70,12 +74,33 @@ func (app *App) signup(w http.ResponseWriter, r *http.Request, _ httprouter.Para
 		respondWithError(w, http.StatusConflict, "Username taken")
 		return
 	}
-	token, err := user.Token()
+	token, err := user.GenerateToken()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not generate token")
 		return
 	}
-	resp, err := json.Marshal(map[string]string{"token": token})
+	user.Token = token
+	user.Password = ""
+	resp, err := json.Marshal(user)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error marshalling json")
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
+}
+
+func (app *App) user(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	tokenString := r.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	log.Printf("received token: %s\n", tokenString)
+	var user models.User
+	if err := user.FromToken(tokenString); err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	resp, err := json.Marshal(user)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error marshalling json")
 		return

@@ -12,6 +12,7 @@ const headers = () => {
   if (token) {
     _headers["Authorization"] = `Bearer ${token}`;
   }
+  return _headers;
 };
 
 const currentUser = async () => {

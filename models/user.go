@@ -12,7 +12,8 @@ import (
 type User struct {
 	ID       int    `db:"user_id" json:"id"`
 	Username string `db:"username" json:"username"`
-	Password string `db:"password" json:"password"`
+	Password string `db:"password" json:"password,omitempty"`
+	Token    string `json:"token"`
 }
 
 var userSchema = `
@@ -63,8 +64,8 @@ func (store UserStore) Authenticate(user *User) error {
 	return nil
 }
 
-// Token provides a JWT token for the user
-func (user *User) Token() (string, error) {
+// GenerateToken provides a JWT token for the user
+func (user *User) GenerateToken() (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       user.ID,
 		"username": user.Username,
@@ -77,11 +78,12 @@ func (user *User) FromToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte("secret"), nil
 	})
+	user.Token = tokenString
 	if err != nil {
 		return err
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		user.ID = claims["id"].(int)
+		user.ID = int(claims["id"].(float64)) // numbers in claims are always float64
 		user.Username = claims["username"].(string)
 		return nil
 	}

@@ -22,7 +22,7 @@ class App extends React.Component {
     if (token) {
       api.setToken(token);
     }
-    this.props.onLoad(token, token ? api.currentUser() : null);
+    this.props.onLoad(token, token ? await api.currentUser() : null);
   }
 
   render() {
