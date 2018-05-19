@@ -29,11 +29,13 @@ class App extends React.Component {
     return (
       <div>
         <Header />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-        </Switch>
+        <div className="pt5 pt6-ns">
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/signup" component={Signup} />
+          </Switch>
+        </div>
       </div>
     );
   }

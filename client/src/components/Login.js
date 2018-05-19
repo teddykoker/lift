@@ -3,6 +3,10 @@ import api from "../api";
 import { login } from "../actions";
 import { connect } from "react-redux";
 
+const inputStyle = "pa2 input-reset ba bg-transparent br3 w-100";
+const legendStyle = "f4 fw6 ph0 mh0";
+const labelStyle = "db fw4 lh-copy f6";
+
 const mapStateToProps = state => ({ ...state });
 
 const mapDispatchToProps = dispatch => ({
@@ -27,7 +31,7 @@ class Login extends Component {
     this.props.login(payload);
     if (payload.token) {
       window.localStorage.setItem("jwt", payload.token);
-      api.setToken(payload.token)
+      api.setToken(payload.token);
       this.props.history.push("/");
     }
   };
@@ -40,19 +44,20 @@ class Login extends Component {
         onSubmit={this.onSubmit(username, password)}
       >
         <fieldset className="ba b--transparent ph0 mh0">
-          <legend className="f4 fw6 ph0 mh0">Login</legend>
+          <legend className={legendStyle}>Login</legend>
           <div className="mt3">
-            <label className="db fw6 lh-copy f6">Username</label>
+            <label className={labelStyle}>Username</label>
             <input
-              className="pa2 input-reset ba bg-transparent w-100"
+              className={inputStyle}
+              type="text"
               name="username"
               onChange={this.onChange}
             />
           </div>
           <div className="mv3">
-            <label className="db fw6 lh-copy f6">Password</label>
+            <label className={labelStyle}>Password</label>
             <input
-              className="pa2 input-reset ba bg-transparent w-100"
+              className={inputStyle}
               type="password"
               name="password"
               onChange={this.onChange}
@@ -61,7 +66,7 @@ class Login extends Component {
         </fieldset>
         <div>
           <input
-            className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+            className="input-reset f6 link dim br3 ba ph3 pv2 mb2 dib black bg-lightgray"
             type="submit"
             value="Login"
           />
