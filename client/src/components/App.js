@@ -7,6 +7,8 @@ import { onLoad } from "../actions";
 import Login from "./Login";
 import Header from "./Header";
 import Signup from "./Signup";
+import Programs from "./Programs";
+import NewProgram from "./NewProgram";
 
 const mapStateToProps = state => ({});
 
@@ -27,16 +29,17 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <Header />
         <div className="pt5 pt6-ns">
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
+            <Route path="/programs" component={Programs} />
           </Switch>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }
