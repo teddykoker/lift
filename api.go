@@ -109,3 +109,7 @@ func (app *App) user(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 	w.WriteHeader(http.StatusOK)
 	w.Write(resp)
 }
+
+func (app *App) createProgram(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+
+}

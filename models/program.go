@@ -4,9 +4,9 @@ import "github.com/jmoiron/sqlx"
 
 // A Program represents a workout program created by a user
 type Program struct {
-	ID        int    `db:"program_id"`
-	Name      string `db:"name"`
-	Exercises []*Exercise
+	ID      int    `db:"program_id"`
+	Name    string `db:"name"`
+	Workout []*Workout
 }
 
 var programSchema = `

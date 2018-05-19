@@ -34,3 +34,10 @@ func (store WorkoutStore) Insert(workout *Workout) error {
 	return store.DB.QueryRow(`INSERT INTO exercise (sequence, program_id)
 		VALUES ($1, $2) RETURNING exercise_id`, &workout.Sequence, &workout.ProgramID).Scan(&workout.ID)
 }
+
+// OfProgram gets all workouts in the given program
+func (store WorkoutStore) OfProgram(program *Program) ([]Workout, error) {
+	ws := []Workout{}
+	err := store.DB.Select(&ws, "SELECT * FROM workout WHERE program_id=$1", program.ID)
+	return ws, err
+}

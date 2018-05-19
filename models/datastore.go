@@ -7,6 +7,7 @@ type Datastore struct {
 	DB        *sqlx.DB
 	Exercises *ExerciseStore
 	Users     *UserStore
+	Programs  *ProgramStore
 }
 
 // NewDatastore creates a new datastore
@@ -16,5 +17,7 @@ func NewDatastore(db *sqlx.DB) *Datastore {
 	d.Exercises.Init()
 	d.Users = &UserStore{DB: db}
 	d.Users.Init()
+	d.Programs = &ProgramStore{DB: db}
+	d.Programs.Init()
 	return d
 }
