@@ -3,64 +3,72 @@ package models
 import (
 	"errors"
 
+	"github.com/globalsign/mgo/bson"
+
+	"github.com/globalsign/mgo"
+
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/jmoiron/sqlx"
 	"golang.org/x/crypto/bcrypt"
 )
 
+const collection = "users"
+
 // A User represents a single user of the site
 type User struct {
-	ID       int    `db:"user_id" json:"id"`
-	Username string `db:"username" json:"username"`
-	Password string `db:"password" json:"password,omitempty"`
-	Token    string `json:"token"`
+	ID       int
+	Username string
+	Password string
+	Token    string
+	Programs []*Program
 }
 
-var userSchema = `
-CREATE TABLE IF NOT EXISTS users (
-	user_id  SERIAL PRIMARY KEY,
-	username VARCHAR,
-	password VARCHAR
-);
-`
+// A Program represents a workout program
+type Program struct {
+	Name    string
+	Workout []*Workout
+}
+
+// A Workout represents one workout, which is part of a program,
+// and consists of a sequence of exercises.
+type Workout struct {
+	Exercises []*Exercise
+}
+
+// An Exercise represents a single exercise to be performed
+type Exercise struct {
+	ID       int
+	Sets     int
+	Reps     int
+	Weight   float64
+	Movement string
+}
 
 // A UserStore is used for loading and saving Users to the database
 type UserStore struct {
-	DB *sqlx.DB
-}
-
-// Init initializes table schema
-func (store UserStore) Init() {
-	store.DB.Exec(userSchema)
+	DB *mgo.Database
 }
 
 // Insert user into database
 func (store UserStore) Insert(user *User) error {
-	var exists bool
-	if err := store.DB.QueryRow("SELECT EXISTS (SELECT user_id FROM users WHERE username=$1)", user.Username).Scan(&exists); err != nil {
-		return err
-	}
-	if exists {
-		return errors.New("User exists")
-	}
+	// TODO: Check if user exists
 	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		return err
 	}
 	user.Password = string(pass)
-	return store.DB.QueryRow("INSERT INTO users (username, password) VALUES ($1, $2) RETURNING user_id", user.Username, user.Password).Scan(&user.ID)
+	return store.DB.C(collection).Insert(user)
 }
 
 // Authenticate returns an error unless the username and password match those in the database
 func (store UserStore) Authenticate(user *User) error {
-	var hash string
-	if err := store.DB.QueryRow("SELECT user_id, password FROM users WHERE username=$1", user.Username).Scan(&user.ID, &hash); err != nil {
+	verify := &User{}
+	if err := store.DB.C(collection).Find(bson.M{"username": user.Username}).One(verify); err != nil {
 		return err
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(user.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(verify.Password), []byte(user.Password)); err != nil {
 		return err
 	}
-	user.Password = hash
+	user = verify
 	return nil
 }
 

@@ -1,23 +1,18 @@
 package models
 
-import "github.com/jmoiron/sqlx"
+import (
+	"github.com/globalsign/mgo"
+)
 
 // A Datastore can be used to access all of the models in the database
 type Datastore struct {
-	DB        *sqlx.DB
-	Exercises *ExerciseStore
-	Users     *UserStore
-	Programs  *ProgramStore
+	DB    *mgo.Database
+	Users *UserStore
 }
 
 // NewDatastore creates a new datastore
-func NewDatastore(db *sqlx.DB) *Datastore {
+func NewDatastore(db *mgo.Database) *Datastore {
 	d := &Datastore{DB: db}
-	d.Exercises = &ExerciseStore{DB: db}
-	d.Exercises.Init()
 	d.Users = &UserStore{DB: db}
-	d.Users.Init()
-	d.Programs = &ProgramStore{DB: db}
-	d.Programs.Init()
 	return d
 }

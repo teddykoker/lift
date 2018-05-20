@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"path"
 
-	"github.com/jmoiron/sqlx"
+	"github.com/globalsign/mgo"
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/lib/pq"
 )
@@ -24,10 +24,11 @@ var static = path.Join(entry, "static")
 // NewApp returns initialized struct
 func NewApp(dbURL string) *App {
 
-	db, err := sqlx.Open("postgres", dbURL)
+	session, err := mgo.Dial(dbURL)
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 	}
+	db := session.DB("lift")
 
 	router := httprouter.New()
 
