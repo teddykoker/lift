@@ -24,7 +24,11 @@ var static = path.Join(entry, "static")
 // NewApp returns initialized struct
 func NewApp(dbURL string) *App {
 
-	session, err := mgo.Dial(dbURL)
+	info, err := mgo.ParseURL(dbURL)
+	if err != nil {
+		log.Fatalf("Error parsing database URL: %q", err)
+	}
+	session, err := mgo.DialWithInfo(info)
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 	}

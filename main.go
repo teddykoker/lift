@@ -18,7 +18,7 @@ func main() {
 
 	log.Printf("Listening on %s", addr)
 
-	app := NewApp(os.Getenv("DATABASE_URL"))
+	app := NewApp(os.Getenv("MONGODB_URI"))
 	app.Run(addr)
 
 	// store := app.Store
