@@ -13,11 +13,11 @@ const collection = "users"
 
 // A User represents a single user of the site
 type User struct {
-	ID       int
-	Username string
-	Password string
-	Token    string
-	Programs []*Program
+	ID       bson.ObjectId `bson:"_id" json:"id"`
+	Username string        `json:"username"`
+	Password string        `json:"password,omitempty"`
+	Token    string        `bson:"-" json:"token"`
+	Programs []*Program    `json:"programs"`
 }
 
 // A Program represents a workout program
@@ -34,7 +34,6 @@ type Workout struct {
 
 // An Exercise represents a single exercise to be performed
 type Exercise struct {
-	ID       int
 	Sets     int
 	Reps     int
 	Weight   float64
@@ -49,11 +48,19 @@ type UserStore struct {
 // Insert user into database
 func (store UserStore) Insert(user *User) error {
 	// TODO: Check if user exists
+	count, err := store.DB.C(collection).Find(bson.M{"username": user.Username}).Count()
+	if err != nil {
+		return err
+	}
+	if count != 0 {
+		return errors.New("user with username exists")
+	}
 	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		return err
 	}
 	user.Password = string(pass)
+	user.ID = bson.NewObjectId()
 	return store.DB.C(collection).Insert(user)
 }
 
@@ -89,7 +96,9 @@ func (user *User) FromToken(tokenString string) error {
 		return err
 	}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		user.ID = int(claims["id"].(float64)) // numbers in claims are always float64
+		// TODO: handle possibitly of runtime panic if claims doesn't contain
+		// valid items
+		user.ID = bson.ObjectIdHex(claims["id"].(string))
 		user.Username = claims["username"].(string)
 		return nil
 	}

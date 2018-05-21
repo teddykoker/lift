@@ -24,7 +24,6 @@ var static = path.Join(entry, "static")
 func NewApp(dbURL string) *App {
 
 	info, err := mgo.ParseURL(dbURL)
-	log.Println(info)
 	if err != nil {
 		log.Fatalf("Error parsing database URL: %q", err)
 	}

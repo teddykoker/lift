@@ -38,11 +38,13 @@ class Login extends Component {
 
   render() {
     const { username, password } = this.state;
+    const { error } = this.props;
     return (
       <form
         className="measure center"
         onSubmit={this.onSubmit(username, password)}
       >
+        {error}
         <fieldset className="ba b--transparent ph0 mh0">
           <legend className={legendStyle}>Login</legend>
           <div className="mt3">
