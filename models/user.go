@@ -3,11 +3,9 @@ package models
 import (
 	"errors"
 
-	"github.com/globalsign/mgo/bson"
-
-	"github.com/globalsign/mgo"
-
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
 	"golang.org/x/crypto/bcrypt"
 )
 

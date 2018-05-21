@@ -8,7 +8,6 @@ import (
 
 	"github.com/globalsign/mgo"
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/lib/pq"
 )
 
 // App struct where all variables will be defined
@@ -25,6 +24,7 @@ var static = path.Join(entry, "static")
 func NewApp(dbURL string) *App {
 
 	info, err := mgo.ParseURL(dbURL)
+	log.Println(info)
 	if err != nil {
 		log.Fatalf("Error parsing database URL: %q", err)
 	}
@@ -32,7 +32,7 @@ func NewApp(dbURL string) *App {
 	if err != nil {
 		log.Fatalf("Error opening database: %q", err)
 	}
-	db := session.DB("lift")
+	db := session.DB("")
 
 	router := httprouter.New()
 

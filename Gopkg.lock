@@ -9,12 +9,15 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/jmoiron/sqlx"
+  name = "github.com/globalsign/mgo"
   packages = [
     ".",
-    "reflectx"
+    "bson",
+    "internal/json",
+    "internal/sasl",
+    "internal/scram"
   ]
-  revision = "2aeb6a910c2b94f2d5eb53d9895d80e27264ec41"
+  revision = "efe0945164a7e582241f37ae8983c075f8f2e870"
 
 [[projects]]
   branch = "master"
@@ -24,25 +27,16 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/lib/pq"
-  packages = [
-    ".",
-    "oid"
-  ]
-  revision = "d34b9ff171c21ad295489235aec8b6626023cd04"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
     "blowfish"
   ]
-  revision = "2d027ae1dddd4694d54f7a8b6cbe78dca8720226"
+  revision = "1a580b3eff7814fc9b40602fd35256c63b50f491"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4ef947e069e673deca5f28edaf57118b482470a8b55f7a95e7aa21981d846b01"
+  inputs-digest = "d2419295211f212196ef4e1a4124b349fc73936f9311120829c1f3e317f29041"
   solver-name = "gps-cdcl"
   solver-version = 1
