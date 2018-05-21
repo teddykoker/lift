@@ -47,7 +47,6 @@ type UserStore struct {
 
 // Insert user into database
 func (store UserStore) Insert(user *User) error {
-	// TODO: Check if user exists
 	count, err := store.DB.C(collection).Find(bson.M{"username": user.Username}).Count()
 	if err != nil {
 		return err
