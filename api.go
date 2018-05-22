@@ -111,5 +111,37 @@ func (app *App) user(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 }
 
 func (app *App) createProgram(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	tokenString := r.Header.Get("Authorization")
+	tokenString = strings.TrimPrefix(tokenString, "Bearer ")
+	log.Printf("received token: %s\n", tokenString)
+	var user *models.User
+	if err := user.FromToken(tokenString); err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	user, err := app.Store.Users.FindByID(user.ID)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, err.Error())
+		return
+	}
+	var program models.Program
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&program); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Could not parse request")
+		return
+	}
+	defer r.Body.Close()
+	user.Programs = append(user.Programs, &program)
+	if err := app.Store.Users.Update(user); err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Could not update user")
+	}
+	resp, err := json.Marshal(user)
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, "Error marshalling json")
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(resp)
 
 }

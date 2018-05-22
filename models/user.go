@@ -22,22 +22,22 @@ type User struct {
 
 // A Program represents a workout program
 type Program struct {
-	Name    string
-	Workout []*Workout
+	Name    string     `json:"name"`
+	Workout []*Workout `json:"workout"`
 }
 
 // A Workout represents one workout, which is part of a program,
 // and consists of a sequence of exercises.
 type Workout struct {
-	Exercises []*Exercise
+	Exercises []*Exercise `json:"exercises"`
 }
 
 // An Exercise represents a single exercise to be performed
 type Exercise struct {
-	Sets     int
-	Reps     int
-	Weight   float64
-	Movement string
+	Sets     int     `json:"sets"`
+	Reps     int     `json:"reps"`
+	Weight   float64 `json:"weight"`
+	Movement string  `json:"movement"`
 }
 
 // A UserStore is used for loading and saving Users to the database
@@ -74,6 +74,18 @@ func (store UserStore) Authenticate(user *User) error {
 	}
 	user = verify
 	return nil
+}
+
+// FindByID returns the user with the given id
+func (store UserStore) FindByID(id bson.ObjectId) (*User, error) {
+	user := &User{}
+	err := store.DB.C(collection).FindId(id).One(user)
+	return user, err
+}
+
+// Update updates given user using its id
+func (store UserStore) Update(user *User) error {
+	return store.DB.C(collection).UpdateId(user.ID, user)
 }
 
 // GenerateToken provides a JWT token for the user
