@@ -31,12 +31,13 @@ class App extends React.Component {
     return (
       <React.Fragment>
         <Header />
-        <div className="pt5 pt6-ns">
+        <div className="ph4 pt5 pt6-ns">
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
             <Route path="/programs" component={Programs} />
+            <Route path="/newProgram" component={NewProgram} />
           </Switch>
         </div>
       </React.Fragment>
