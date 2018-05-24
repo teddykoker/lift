@@ -3,6 +3,7 @@ import React, { Component } from "react";
 const tableStyle = "f6 w-100 mw8 center";
 const headerStyle = "fw6 bb b--black-20 tl pb3 pr3 bg-white";
 const cellStyle = "pv3 pr3 bb b--black-20";
+const inputStyle = "input-reset";
 
 const EditExercise = ({ exercise, onChange }) => {
   return (
@@ -13,6 +14,7 @@ const EditExercise = ({ exercise, onChange }) => {
           name="sets"
           value={exercise.sets}
           onChange={onChange}
+          className={inputStyle}
         />
       </td>
       <td className={cellStyle} value={exercise.reps}>
@@ -21,6 +23,7 @@ const EditExercise = ({ exercise, onChange }) => {
           name="reps"
           value={exercise.reps}
           onChange={onChange}
+          className={inputStyle}
         />
       </td>
       <td className={cellStyle} value={exercise.weight}>
@@ -29,6 +32,7 @@ const EditExercise = ({ exercise, onChange }) => {
           name="weight"
           value={exercise.weight}
           onChange={onChange}
+          className={inputStyle}
         />
       </td>
       <td className={cellStyle}>
@@ -37,6 +41,7 @@ const EditExercise = ({ exercise, onChange }) => {
           name="movement"
           value={exercise.movement}
           onChange={onChange}
+          className={inputStyle}
         />
       </td>
     </tr>
@@ -55,17 +60,19 @@ const EditWorkout = ({ workout, onChange, addExercise }) => {
   return (
     <React.Fragment>
       <h2>{name}</h2>
-      <table className={tableStyle} cellSpacing="0">
-        <thead>
-          <tr>
-            <th className={headerStyle}>Sets</th>
-            <th className={headerStyle}>Reps</th>
-            <th className={headerStyle}>Weight</th>
-            <th className={headerStyle}>Movement</th>
-          </tr>
-        </thead>
-        <tbody className="lh-copy">{rows}</tbody>
-      </table>
+      <div className="overflow-auto">
+        <table className={tableStyle} cellSpacing="0">
+          <thead>
+            <tr>
+              <th className={headerStyle}>Sets</th>
+              <th className={headerStyle}>Reps</th>
+              <th className={headerStyle}>Weight</th>
+              <th className={headerStyle}>Movement</th>
+            </tr>
+          </thead>
+          <tbody className="lh-copy">{rows}</tbody>
+        </table>
+      </div>
       <button onClick={addExercise}>Add Exercise</button>
     </React.Fragment>
   );
@@ -128,7 +135,7 @@ class NewProgram extends Component {
     });
 
     return (
-      <div className="overflow-auto">
+      <div>
         {exercises}
         <button onClick={this.addWorkout}>Add Workout</button>
       </div>
