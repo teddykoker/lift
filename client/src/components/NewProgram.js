@@ -3,7 +3,7 @@ import React, { Component } from "react";
 const tableStyle = "f6 w-100 mw8 center";
 const headerStyle = "fw6 bb b--black-20 tl pb3 pr3 bg-white";
 const cellStyle = "pv3 pr3 bb b--black-20";
-const inputStyle = "input-reset";
+const inputStyle = "pa2 input-reset ba bg-transparent br3 w-100";
 
 const EditExercise = ({ exercise, onChange }) => {
   return (
@@ -73,7 +73,12 @@ const EditWorkout = ({ workout, onChange, addExercise }) => {
           <tbody className="lh-copy">{rows}</tbody>
         </table>
       </div>
-      <button onClick={addExercise}>Add Exercise</button>
+      <button
+        className={"f6 link dim br3 ba ph3 pv2 mg2 dib black bg-lightgray"}
+        onClick={addExercise}
+      >
+        Add Exercise
+      </button>
     </React.Fragment>
   );
 };
