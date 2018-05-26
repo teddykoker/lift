@@ -16,6 +16,7 @@ func (app *App) Bind() {
 	app.Router.POST("/api/login", app.login)
 	app.Router.POST("/api/signup", app.signup)
 	app.Router.GET("/api/user", app.user)
+	app.Router.POST("/api/program", app.createProgram)
 }
 
 // respondWithError is a helper to respond with error messages in JSON

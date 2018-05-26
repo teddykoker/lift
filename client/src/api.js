@@ -46,4 +46,13 @@ const login = async (username, password) => {
   return response.json();
 };
 
+const newProgram = async program => {
+  const response = await fetch("/api/program", {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(program)
+  });
+  return response.json();
+};
+
 export default { setToken, currentUser, login, signup };
