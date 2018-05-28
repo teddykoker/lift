@@ -74,7 +74,12 @@ const EditWorkout = ({ workout, onChange, addExercise }) => {
           <tbody className="lh-copy">{rows}</tbody>
         </table>
       </div>
-      <button onClick={addExercise}>Add Exercise</button>
+      <button
+        className={"f6 link dim br3 ba ph3 pv2 mg2 dib black bg-lightgray"}
+        onClick={addExercise}
+      >
+        Add Exercise
+      </button>
     </React.Fragment>
   );
 };
