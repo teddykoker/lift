@@ -55,4 +55,4 @@ const newProgram = async program => {
   return response.json();
 };
 
-export default { setToken, currentUser, login, signup };
+export default { setToken, currentUser, login, signup, newProgram };

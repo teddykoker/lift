@@ -1,9 +1,10 @@
 import React, { Component } from "react";
+import api from "../api";
 
 const tableStyle = "f6 w-100 mw8 center";
 const headerStyle = "fw6 bb b--black-20 tl pb3 pr3 bg-white";
 const cellStyle = "pv3 pr3 bb b--black-20";
-const inputStyle = "input-reset";
+const inputStyle = "pa2 input-reset ba bg-transparent br3 w-100";
 
 const EditExercise = ({ exercise, onChange }) => {
   return (
@@ -118,6 +119,12 @@ class NewProgram extends Component {
     this.setState({ program });
   };
 
+  addProgram = async () => {
+    const { program } = this.state;
+    const payload = await api.newProgram(program);
+    console.log(payload);
+  };
+
   render() {
     const { program } = this.state;
 
@@ -138,6 +145,7 @@ class NewProgram extends Component {
       <div>
         {exercises}
         <button onClick={this.addWorkout}>Add Workout</button>
+        <button onClick={this.addProgram}>Save</button>
       </div>
     );
   }
