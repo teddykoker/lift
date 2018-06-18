@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strings"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -32,25 +34,21 @@ func (app *App) home(w http.ResponseWriter, r *http.Request, _ httprouter.Params
 }
 
 func (app *App) login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var user models.User
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&user); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Could not parse request")
-		return
-	}
-	defer r.Body.Close()
-	if err := app.Store.Users.Authenticate(&user); err != nil {
+	var login models.User
+	json.NewDecoder(r.Body).Decode(&login)
+	u, err := app.Store.GetUserByUsername(login.Username)
+	if err != nil || bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(login.Password)) != nil {
 		respondWithError(w, http.StatusUnauthorized, "Incorrect username or password")
 		return
 	}
-	token, err := user.GenerateToken()
+	token, err := u.GenerateToken()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not generate token")
 		return
 	}
-	user.Token = token
-	user.Password = ""
-	resp, err := json.Marshal(user)
+	u.Token = token
+	u.Password = ""
+	resp, err := json.Marshal(u)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error marshalling json")
 		return
@@ -62,27 +60,23 @@ func (app *App) login(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 }
 
 func (app *App) signup(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	var user models.User
-	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&user); err != nil {
-		respondWithError(w, http.StatusBadRequest, "Could not parse request")
-		return
-	}
-	defer r.Body.Close()
-
-	if err := app.Store.Users.Insert(&user); err != nil {
+	var u models.User
+	json.NewDecoder(r.Body).Decode(&u)
+	hash, _ := bcrypt.GenerateFromPassword([]byte(u.Password), 10)
+	u.Password = string(hash)
+	if err := app.Store.InsertUser(&u); err != nil {
 		log.Println(err)
 		respondWithError(w, http.StatusConflict, "Username taken")
 		return
 	}
-	token, err := user.GenerateToken()
+	token, err := u.GenerateToken()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not generate token")
 		return
 	}
-	user.Token = token
-	user.Password = ""
-	resp, err := json.Marshal(user)
+	u.Token = token
+	u.Password = ""
+	resp, err := json.Marshal(u)
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Error marshalling json")
 		return
@@ -120,7 +114,7 @@ func (app *App) createProgram(w http.ResponseWriter, r *http.Request, _ httprout
 		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
 	}
-	user, err := app.Store.Users.FindByID(user.ID)
+	user, err := app.Store.GetUser(user.ID)
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, err.Error())
 		return
@@ -133,7 +127,7 @@ func (app *App) createProgram(w http.ResponseWriter, r *http.Request, _ httprout
 	}
 	defer r.Body.Close()
 	user.Programs = append(user.Programs, &program)
-	if err := app.Store.Users.Update(user); err != nil {
+	if err := app.Store.UpdateUser(user); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Could not update user")
 	}
 	resp, err := json.Marshal(user)

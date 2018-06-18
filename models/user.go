@@ -4,9 +4,7 @@ import (
 	"errors"
 
 	jwt "github.com/dgrijalva/jwt-go"
-	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const collection = "users"
@@ -38,54 +36,6 @@ type Exercise struct {
 	Reps     int     `json:"reps"`
 	Weight   float64 `json:"weight"`
 	Movement string  `json:"movement"`
-}
-
-// A UserStore is used for loading and saving Users to the database
-type UserStore struct {
-	DB *mgo.Database
-}
-
-// Insert user into database
-func (store UserStore) Insert(user *User) error {
-	count, err := store.DB.C(collection).Find(bson.M{"username": user.Username}).Count()
-	if err != nil {
-		return err
-	}
-	if count != 0 {
-		return errors.New("user with username exists")
-	}
-	pass, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
-	if err != nil {
-		return err
-	}
-	user.Password = string(pass)
-	user.ID = bson.NewObjectId()
-	return store.DB.C(collection).Insert(user)
-}
-
-// Authenticate returns an error unless the username and password match those in the database
-func (store UserStore) Authenticate(user *User) error {
-	verify := &User{}
-	if err := store.DB.C(collection).Find(bson.M{"username": user.Username}).One(verify); err != nil {
-		return err
-	}
-	if err := bcrypt.CompareHashAndPassword([]byte(verify.Password), []byte(user.Password)); err != nil {
-		return err
-	}
-	user = verify
-	return nil
-}
-
-// FindByID returns the user with the given id
-func (store UserStore) FindByID(id bson.ObjectId) (*User, error) {
-	user := &User{}
-	err := store.DB.C(collection).FindId(id).One(user)
-	return user, err
-}
-
-// Update updates given user using its id
-func (store UserStore) Update(user *User) error {
-	return store.DB.C(collection).UpdateId(user.ID, user)
 }
 
 // GenerateToken provides a JWT token for the user
